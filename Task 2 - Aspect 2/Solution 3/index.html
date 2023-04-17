@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies!</title>
+    <script>
+        function convertRuntimeFormat(minutesTotal) {
+            let hours = Math.floor(minutesTotal / 60);
+            let minutesRemaining = minutesTotal - (hours * 60);
+
+            return "Runtime " + hours + "h " + minutesRemaining + "m";
+        }//end convertTimerFormat(minutesTotal)
+
+        function convertReleasedDateFormat(ISO8601FormatDate) {
+            let year = ISO8601FormatDate.substring(0,4);
+            let month = ISO8601FormatDate.substring(5,7);
+            let day = ISO8601FormatDate.substring(8);
+
+            //Remove leading zeros
+            if (month[0] == 0) {
+                month = month.substring(1);
+            }
+            if (day[0] == 0) {
+                day = day.substring(1);
+            }
+
+            return "Released on " + month + "/" + day + "/" + year;
+        }//end function convertReleasedDateFormat(ISO8601FormatDate)
+
+        function createGenreElement(movieGenres, movie) {
+            for (let i = 0; i < movie.Genres.length; i++) {
+                let genre = document.createElement('span');
+                genre.setAttribute("class", "genre");
+                genre.textContent = movie.Genres[i];
+                movieGenres.appendChild(genre);
+            }
+        }//end function createGenreElement(movieGenres, recivedMovieGenres)
+
+        function createList(list, array) {
+            for (let i = 0; i < array.length; i++) {
+                let listelement = document.createElement('li');
+                listelement.textContent = array[i];
+                list.appendChild(listelement);
+            }
+        }//end function createList(list, array)
+        
+        window.onload = function () {
+            const xhr = new XMLHttpRequest();
+
+            xhr.onload = function () {
+                // choose the body-element in the HTML
+                const bodyElement = document.querySelector("body");
+
+                if (xhr.status == 200) {
+		            /* Part 2: Build the HTML elements here and append them to the body */
+                    // Parsing  responseText into a array
+                    const moviesArray = JSON.parse(xhr.responseText);
+
+                    // Building DOM
+                    for (movie of moviesArray) {
+                        const article = document.createElement('article');
+                        bodyElement.appendChild(article);
+
+
+                        const moviePoster = document.createElement('img');
+                        article.appendChild(moviePoster);
+                        moviePoster.setAttribute("src", movie.Poster);
+
+
+                        const movieTitle = document.createElement('h1');
+                        article.appendChild(movieTitle);
+                        movieTitle.textContent = movie.Title;
+                        
+
+                        const basicMovieInfo = document.createElement('p');
+                        article.appendChild(basicMovieInfo);
+
+
+                        const movieRuntime = document.createElement('span');
+                        basicMovieInfo.appendChild(movieRuntime);
+                        movieRuntime.textContent = convertRuntimeFormat(movie.Runtime);
+                        const bullet = document.createElement('span');
+                        basicMovieInfo.appendChild(bullet);
+                        bullet.textContent = "\u2022";
+                        const releasedDate = document.createElement('span');
+                        basicMovieInfo.appendChild(releasedDate);
+                        releasedDate.textContent = convertReleasedDateFormat(movie.Released);
+
+
+                        const movieGenres = document.createElement('p');
+                        article.appendChild(movieGenres);
+                        createGenreElement(movieGenres, movie);
+
+
+                        const moviePlot = document.createElement('p');
+                        article.appendChild(moviePlot);
+                        moviePlot.textContent = movie.Plot;
+
+
+                        const directors = document.createElement('h2');
+                        article.appendChild(directors);
+                        directors.textContent = "Directors";
+
+
+                        const directorsList = document.createElement('ul');
+                        article.appendChild(directorsList);
+                        createList(directorsList, movie.Directors);
+
+
+                        const writers = document.createElement('h2');
+                        article.appendChild(writers);
+                        writers.textContent = "Writer";
+
+
+                        const writersList = document.createElement('ul');
+                        article.appendChild(writersList);
+                        createList(writersList, movie.Writers);
+
+
+                        const actors = document.createElement('h2');
+                        article.appendChild(actors);
+                        actors.textContent = "Actors";
+
+
+                        const actorsList = document.createElement('ul');
+                        article.appendChild(actorsList);
+                        createList(actorsList, movie.Actors);   
+                    }
+                } else {
+                    bodyElement.append("Daten konnten nicht geladen werden, Status " + xhr.status + " - " + xhr.statusText);
+                }
+            }//end function()
+            xhr.open("GET", "/movies");
+            xhr.send();
+        }//end function()
+    </script>
+
+</head>
+
+<body>
+</body>
+
+</html>

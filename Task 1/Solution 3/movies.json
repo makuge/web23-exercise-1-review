@@ -1,0 +1,77 @@
+[
+    {
+        "Title": "Deadpool",
+        "Released": "2016-02-12",
+        "Runtime": 108,
+        "Genres": [
+            "Action",
+            "Comedy"
+        ],
+        "Directors": [
+            "Tim Miller"
+        ],
+        "Writers": [
+            "Rhett Reese",
+            "Paul Wernick"
+        ],
+        "Actors": [
+            "Ryan Reynolds",
+            "Morena Baccarin",
+            "T.J. Miller"
+        ],
+        "Plot": "A wisecracking mercenary gets experimented on and becomes immortal but ugly, and sets out to track down the man who ruined his looks.",
+        "Poster": "https://m.media-amazon.com/images/M/MV5BYzE5MjY1ZDgtMTkyNC00MTMyLThhMjAtZGI5OTE1NzFlZGJjXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_SX300.jpg",
+        "Metascore": 65,
+        "imdbRating": 8.0
+    },
+    {
+        "Title": "L\u00e9on: The Professional",
+        "Released": "1994-11-18",
+        "Runtime": 110,
+        "Genres": [
+            "Action",
+            "Crime",
+            "Drama"
+        ],
+        "Directors": [
+            "Luc Besson"
+        ],
+        "Writers": [
+            "Luc Besson"
+        ],
+        "Actors": [
+            "Jean Reno",
+            "Gary Oldman",
+            "Natalie Portman"
+        ],
+        "Plot": "12-year-old Mathilda is reluctantly taken in by L\u00e9on, a professional assassin, after her family is murdered. An unusual relationship forms as she becomes his prot\u00e9g\u00e9e and learns the assassin's trade.",
+        "Poster": "https://m.media-amazon.com/images/M/MV5BOTgyMWQ0ZWUtN2Q2MS00NmY0LWI3OWMtNjFkMzZlNDZjNTk0XkEyXkFqcGdeQXVyMjUzOTY1NTc@._V1_SX300.jpg",
+        "Metascore": 64,
+        "imdbRating": 8.5
+    },
+    {
+        "Title": "Inception",
+        "Released": "2010-07-16",
+        "Runtime": 148,
+        "Genres": [
+            "Action",
+            "Adventure",
+            "Sci-Fi"
+        ],
+        "Directors": [
+            "Christopher Nolan"
+        ],
+        "Writers": [
+            "Christopher Nolan"
+        ],
+        "Actors": [
+            "Leonardo DiCaprio",
+            "Joseph Gordon-Levitt",
+            "Elliot Page"
+        ],
+        "Plot": "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O., but his tragic past may doom the project and his team to disaster.",
+        "Poster": "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg",
+        "Metascore": 74,
+        "imdbRating": 8.8
+    }
+]

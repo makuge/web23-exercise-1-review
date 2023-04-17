@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies!</title>
+    <script>
+
+        window.onload = function () {
+            const xhr = new XMLHttpRequest()
+            xhr.onload = function () {
+                const bodyElement = document.querySelector("body")
+                if (xhr.status == 200) {
+                const data = JSON.parse(xhr.responseText);
+                for(movie of data){
+                const article = document.createElement("article")
+                const elements = ['IMG', 'H1', 'P', 'P', 'P', 'H2', 'UL', 'H2', 'UL', 'H2', 'UL']
+                const children = []
+
+                for (let i = 0; i < elements.length; i++) {
+                    const child = document.createElement(elements[i])
+                    children.push(child)
+                    article.appendChild(child)
+                }
+
+                const img = children[0]
+                const h1 = children[1]
+                const p1 = children[2]
+                const p2 = children[3]
+                const p3 = children[4]
+                const h2_1 = children[5]
+                const ul_1 = children[6]
+                const h2_2 = children[7]
+                const ul_2 = children[8]
+                const h2_3 = children[9]
+                const ul_3 = children[10]
+
+                img.src = movie.Poster
+                h1.textContent = movie.Title
+                const runtimeHours = Math.floor(movie.Runtime / 60);
+                const runtimeMinutes = movie.Runtime % 60;
+                p1.innerHTML = `<span>Runtime ${runtimeHours}h ${runtimeMinutes}m</span><span> • </span><span>Released on ${new Date(movie.Released).toLocaleDateString()}</span>`;
+
+                p2.innerHTML = `<span class="genre"> Genres: ${movie.Genres.join('</span> <span class="genre">')}</span>`
+                p3.textContent = movie.Plot
+
+                h2_1.textContent = "Director";
+                ul_1.innerHTML = `<li>${movie.Directors.join('</li><li>')}</li>`;
+
+                h2_2.textContent = "Writers";
+                ul_2.innerHTML = `<li>${movie.Writers.join('</li><li>')}</li>`;
+
+                h2_3.textContent = "Actors";
+                ul_3.innerHTML = `<li>${movie.Actors.join('</li><li>')}</li>`;
+
+                bodyElement.appendChild(article)
+                }
+                } else
+                {
+                                                bodyElement.append("Daten konnten nicht geladen werden, Status " + xhr.status + " - " + xhr.statusText)
+                                            }
+                                        }
+                                        xhr.open("GET", "/movies")
+                                        xhr.send()
+                                    }
+    </script>
+
+</head>
+
+<body>
+</body>
+
+</html>

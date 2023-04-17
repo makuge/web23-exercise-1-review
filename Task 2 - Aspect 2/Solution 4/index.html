@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies!</title>
+    <script>
+
+        function movieGetter(responseText, whatToGet, filmIndex, childElementIndex) {
+            const myArr = JSON.parse(responseText)
+
+            switch (whatToGet) {
+                case "Title":
+                    return myArr[filmIndex].Title.toString()
+                case "Released":
+                    return myArr[filmIndex].Released
+                case "Runtime":
+                    return myArr[filmIndex].Runtime
+                case "Genres":
+                    return myArr[filmIndex].Genres.toString()
+                case "Directors":
+                    return myArr[filmIndex].Directors[childElementIndex].toString()
+                case "Writers":
+                    return myArr[filmIndex].Writers[childElementIndex].toString()
+                case "Actors":
+                    return myArr[filmIndex].Actors[childElementIndex].toString()
+                case "Plot":
+                    return myArr[filmIndex].Plot.toString()
+                case "Poster":
+                    return myArr[filmIndex].Poster.toString()
+                case "Metascore":
+                    return myArr[filmIndex].Metascore.toString()
+                case "imdbRating":
+                    return myArr[filmIndex].imdbRating.toString()
+                default:
+
+                    return "N/A"
+
+            }
+        }
+
+
+        window.onload = function () {
+
+            const xhr = new XMLHttpRequest()
+            xhr.onload = function () {
+                const bodyElement = document.querySelector("body")
+
+                let filmIndex;
+                if (xhr.status === 200) {
+                    let stringiii = xhr.responseText
+                    const parsedXHR = JSON.parse(stringiii)
+
+                    /* Part 2: Build the HTML elements here and append them to the body */
+                    bodyElement.append("1--------1")
+
+
+                    test(0)
+                    test(1)
+                    test(2)
+
+                    function test(filmIndex) {
+                        const articleAll = document.createElement("article")
+                        document.body.append(articleAll)
+                        const imgElement = document.createElement('img')
+                        const titleElement = document.createElement('h1')
+                        const pElement = document.createElement("p")
+                        const runtimeSpan = document.createElement("span")
+                        const bulletSpan = document.createElement("span")
+                        const releasedSpan = document.createElement("span")
+
+                        const plotElement = document.createElement("p")
+                        plotElement.textContent = movieGetter(stringiii, "Plot", filmIndex, 0)
+
+                        imgElement.src = movieGetter(stringiii, "Poster", filmIndex, 0)
+                        runtimeSpan.textContent = "Runtime " + runtimeSlicer();
+                        bulletSpan.textContent = "•"
+
+                        const event = new Date(Date.UTC(2012, 11, 20));
+                        const options = {year: 'numeric', month: 'long', day: 'numeric'};
+
+                        let datesss = new Date(movieGetter(stringiii, "Released", filmIndex, 0)).toLocaleDateString()
+
+                        releasedSpan.textContent = "Released on " + datesss
+                        titleElement.textContent = (movieGetter(stringiii, "Title", filmIndex, 0))
+
+                        function appender() {
+                            //This dictates the order in which the <> go onto HTML
+                            //There is no God.
+
+                            articleAll.append(imgElement)
+                            articleAll.append(titleElement)
+                            articleAll.append(pElement)
+
+                            pElement.appendChild(runtimeSpan)
+                            pElement.appendChild(bulletSpan)
+                            pElement.appendChild(releasedSpan)
+
+                            createSpans("Genres", true, document.createElement('p'), "span")
+                            articleAll.append(plotElement)
+                            createSpans("Directors", false, document.createElement('ul'), "li", "h2") // li in ul
+                            createSpans("Writers", false, document.createElement('ul'), "li", "h2") // li in ul
+                            createSpans("Actors", false, document.createElement('ul'), "li", "h2") // li in ul
+                        }
+
+                        function createSpans(nameOfSpan, booleanClassOrClassless, parentElement, typeOfElement, grandparentsElementType) {
+
+                            // This if Block checks if it is not Genres and creates and puts an Element of Type "H2" before the items
+                            if (!booleanClassOrClassless) {
+                                let blankName = document.createElement(grandparentsElementType)
+                                blankName.innerHTML = nameOfSpan
+                                articleAll.append(blankName)
+                            }
+                            // Since I use "Genres" as a search term I cut off the last character and make it lowercase to fit the readme
+                            let placeholderName2 = nameOfSpan.substring(0, nameOfSpan.length - 1).toLowerCase();
+
+                            for (let i = 0; i < parsedXHR[filmIndex][nameOfSpan].length; i++) {
+
+
+                                const toBeAbleToPutTextInIt = document.createElement(typeOfElement);  // -->  <span></span>
+                                if (booleanClassOrClassless) {
+                                    toBeAbleToPutTextInIt.setAttribute('class', placeholderName2);//  -->  <span tabindex="banana"></span>
+
+                                }
+
+                                toBeAbleToPutTextInIt.innerHTML = parsedXHR[filmIndex][nameOfSpan][i]
+
+                                parentElement.append(toBeAbleToPutTextInIt)
+                                articleAll.append(parentElement)
+                            }
+                        }
+
+                        document.body.append(articleAll);
+                        appender()
+
+                    function runtimeSlicer() {
+
+                        // This function returns the runtime in a better format. It takes
+                        let runtime = movieGetter(stringiii, "Runtime", filmIndex, 0)
+                        // is 123
+                        if (isNaN(runtime)) {
+                            return "N/A"
+                        } else if (runtime > 0 && runtime < 60) {
+
+
+                            return Math.trunc(runtime).toString() + "m"
+                        } else
+
+                            return Math.trunc(runtime / 60) + 'h ' + (runtime - (Math.trunc(runtime / 60) * 60)) + "m"
+
+                    }
+                    }
+
+                    bodyElement.append(("2---------2"))
+
+                } else {
+                    bodyElement.append("Daten konnten nicht geladen werden, Status " + xhr.status + " - " + xhr.statusText)
+                }
+            }
+
+            xhr.open("GET", "/movies")
+            xhr.send()
+        }
+
+    </script>
+</head>
+
+
+<body>
+<script>
+
+
+</script>
+</body>
+
+</html>

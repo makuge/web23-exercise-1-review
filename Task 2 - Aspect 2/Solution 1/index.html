@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies!</title>
+
+    <script>
+
+        function buildGenres(genreList){
+            const p = document.createElement('p')
+            for (const genre of genreList){
+                const span = document.createElement('span');
+                span.textContent = genre
+                span.classList.add('genre');
+                p.append(span)
+            }
+            return p
+        }
+
+        function listGenerator(s, article, list){
+
+            const header = document.createElement('h2');
+            header.innerText = s
+
+
+            const valueList = document.createElement('ul')
+            for (const values of list){
+                const value = document.createElement('li');
+                value.innerText = values
+                valueList.append(value)
+            }
+            article.appendChild(header);
+            article.appendChild(valueList)
+        }
+
+        function buildTime(movie){
+            const span = document.createElement('span');
+
+            let hour = Math.trunc(movie.Runtime/60);
+            let min = movie.Runtime%60;
+            span.innerText = "Runtime "+hour +"h"+" "+min+"m"
+            return span;
+        }
+
+        function buildBullet(){
+            const span = document.createElement('span');
+            span.innerText = '\u{2022}';
+            return span;
+        }
+
+        function buildRealesedDate(movie){
+            const span = document.createElement('span');
+            span.innerText = "Released on " + new Date(movie.Released).toLocaleDateString();
+            console.log(span)
+            return span;
+
+        }
+
+        window.onload = function () {
+            const xhr = new XMLHttpRequest()
+            xhr.onload = function () {
+                const bodyElement = document.querySelector("body")
+                if (xhr.status === 200) {
+		            /* Part 2: Build the HTML elements here and append them to the body */
+
+                    for (movie of JSON.parse(xhr.response)){
+                        const article = document.createElement('article');
+                        bodyElement.appendChild(article)
+
+                        const img = document.createElement('img');
+                        img.src = movie.Poster;
+                        article.appendChild(img)
+
+                        const h1 = document.createElement('h1');
+                        h1.innerText = movie.Title
+                        article.appendChild(h1)
+
+                        const p1 = document.createElement('p');
+                        p1.append(buildTime(movie))
+                        p1.append(buildBullet())
+                        p1.append(buildRealesedDate(movie))
+                        article.appendChild(p1);
+
+                        article.appendChild(buildGenres(movie.Genres))
+                        const p3 = document.createElement('p');
+                        p3.innerText = movie.Plot;
+                        article.appendChild(p3)
+                        listGenerator("Directors", article, movie.Directors)
+                        listGenerator("Writers", article, movie.Writers)
+                        listGenerator("Actors", article, movie.Actors)
+
+                    }
+                } else {
+                    bodyElement.append("Daten konnten nicht geladen werden, Status " + xhr.status + " - " + xhr.statusText)
+                }
+            }
+            xhr.open("GET", "/movies")
+            xhr.send()
+        }
+    </script>
+
+</head>
+
+<body>
+</body>
+
+</html>
