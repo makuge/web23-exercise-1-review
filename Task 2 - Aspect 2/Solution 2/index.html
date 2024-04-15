@@ -1,135 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movies!</title>
     <script>
         window.onload = function () {
-            const xhr = new XMLHttpRequest()
+            const xhr = new XMLHttpRequest();
             xhr.onload = function () {
-                const bodyElement = document.querySelector("body")
-                if (xhr.status == 200) { 
-                    const movies = JSON.parse(xhr.responseText);
-                    movies.forEach(movie => {
-                        const movieContainer = createMovieContainer(movie);
-                        bodyElement.appendChild(movieContainer);
+                const movieData = JSON.parse(xhr.responseText);
+
+                const movieContainer = document.getElementById("movieContainer");
+
+                movieData.forEach(function (movieData) {
+                    const movieArticle = document.createElement("article");
+                    movieArticle.classList.add("movie");
+
+                    const posterImg = document.createElement("img");
+                    posterImg.src = movieData.Poster;
+                    posterImg.alt = movieData.Title + " Poster";
+                    posterImg.classList.add("poster");
+                    movieArticle.appendChild(posterImg);
+
+                    const titleHeader = document.createElement("h1");
+                    titleHeader.textContent = movieData.Title;
+                    movieArticle.appendChild(titleHeader);
+
+                    const basicInfoParagraph = document.createElement("p");
+                    const runTimeSpan = document.createElement("span")
+                    const hours = Math.trunc(movieData.Runtime / 60);
+                    const minutes = movieData.Runtime % 60;
+                    const formattedRuntime = "Runtime: " + hours + "h " + minutes + "m ";
+                    runTimeSpan.textContent = formattedRuntime;
+                    const bulletSpan = document.createElement("span");
+                    bulletSpan.textContent = "\u2022 ";
+                    const dateSpan = document.createElement("span");
+                    isoDate = movieData.Released;
+                    const dateObj = new Date(isoDate);
+                    const day = dateObj.getDate().toString().padStart(2, '0');
+                    const month = (dateObj.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-based, so add 1
+                    const year = dateObj.getFullYear();
+                    const formattedDate = isoDate.replace(/(\d{4})-(\d{1,2})-(\d{1,2})/, (match, year, month, day) => `${parseInt(month, 10)}/${parseInt(day, 10)}/${year}`);
+                    dateText = "Released on: " + formattedDate;
+                    dateSpan.textContent = dateText;
+                    basicInfoParagraph.appendChild(runTimeSpan)
+                    basicInfoParagraph.appendChild(bulletSpan)
+                    basicInfoParagraph.appendChild(dateSpan)
+                    movieArticle.appendChild(basicInfoParagraph);
+                    const genreParagraph = document.createElement("p"); // Create a paragraph element
+
+                    // Iterate over the genres array
+                    movieData.Genres.forEach(genre => {
+                        // Create a <span> element for each genre
+                        const genreSpan = document.createElement("span");
+                        genreSpan.textContent = genre + " ";
+                        genreSpan.classList.add("genre"); // Add the class "genre" to the span element
+
+                        // Append the genre <span> element to the paragraph <p>
+                        genreParagraph.appendChild(genreSpan);
                     });
-                } else {
-                    bodyElement.append("Daten konnten nicht geladen werden, Status " + xhr.status + " - " + xhr.statusText)
-                }
-            }
-            xhr.open("GET", "/movies")
-            xhr.send()
-        }
 
-        function createMovieContainer(movie) {
-            const container = document.createElement("article");
+                    // Append the genre paragraph to the movie article
+                    movieArticle.appendChild(genreParagraph);
 
-            const elementsToAppend = [
-                createPoster(movie.Title, movie.Poster),
-                createMovieTitle(movie.Title),
-                createMovieDetails(movie.Runtime, movie.Released),
-                createGenres(movie.Genres),
-                createPlot(movie.Plot),
-                createListTitle("Directors", movie.Directors),
-                createList(movie.Directors),
-                createListTitle("Writers", movie.Writers),
-                createList(movie.Writers),
-                createListTitle("Actors", movie.Actors),
-                createList(movie.Actors)
-            ];
 
-            appendToContainer(container, ...elementsToAppend);
-            
-            return container;
-        }
+                    const plotParagraph = document.createElement("p");
+                    plotParagraph.textContent = movieData.Plot;
+                    movieArticle.appendChild(plotParagraph);
 
-        function createPoster(title, poster) {
-            const img = document.createElement("img");
-            img.src = poster;
-            img.alt = `Movie poster of ${title}`;
+                    const directorsHeader = document.createElement("h2");
+                    directorsHeader.textContent = "Directors";
+                    movieArticle.appendChild(directorsHeader);
 
-            return img;
-        }
+                    const directorsList = document.createElement("ul");
+                    movieData.Directors.forEach(function (director) {
+                        const directorItem = document.createElement("li");
+                        directorItem.textContent = director;
+                        directorsList.appendChild(directorItem);
+                    });
+                    movieArticle.appendChild(directorsList);
 
-        function createMovieTitle(title) {
-            const h1 = document.createElement("h1");
-            h1.innerText = title;
+                    const writersHeader = document.createElement("h2");
+                    writersHeader.textContent = "Writers";
+                    movieArticle.appendChild(writersHeader);
 
-            return h1;
-        }
+                    const writersList = document.createElement("ul");
+                    movieData.Writers.forEach(function (writer) {
+                        const writerItem = document.createElement("li");
+                        writerItem.textContent = writer;
+                        writersList.appendChild(writerItem);
+                    });
+                    movieArticle.appendChild(writersList);
 
-        function createMovieDetails(runtime, released) {
-            const p = document.createElement("p");
+                    const actorsHeader = document.createElement("h2");
+                    actorsHeader.textContent = "Actors";
+                    movieArticle.appendChild(actorsHeader);
 
-            p.innerHTML = `
-                <span>${formatRuntime(runtime)}</span>
-                <span>\u{2022}</span>
-                <span>${getLocalDateString(released)}</span>
-            `;
+                    const actorsList = document.createElement("ul");
+                    movieData.Actors.forEach(function (actor) {
+                        const actorItem = document.createElement("li");
+                        actorItem.textContent = actor;
+                        actorsList.appendChild(actorItem);
+                    });
+                    movieArticle.appendChild(actorsList);
 
-            return p;
-        }
+                    movieContainer.appendChild(movieArticle);
+                });
+            };
+            xhr.open("GET", "/movies");
+            xhr.send();
+        };
 
-        function createGenres(genres) {
-            const p = document.createElement("p");
 
-            const genreSpans = genres
-                .map(genre => `<span class="genre">${genre}</span>`)
-                .join("");
-
-            p.innerHTML = genreSpans;
-
-            return p;
-        }
-
-        function createListTitle(title, list) {
-            const h2 = document.createElement("h2");
-            h2.innerText = list.length > 1 ? title : title.slice(0, -1);
-
-            return h2;
-        }
-
-        function createList(list) {
-            const ul = document.createElement("ul");
-
-            const listItems = list
-                .map(listItem => `<li>${listItem}</li>`)
-                .join("");
-
-            ul.innerHTML = listItems;
-
-            return ul;
-        }
-
-        function createPlot(plot) {
-            const p = document.createElement("p");
-            p.innerText = plot;
-
-            return p;
-        }
-
-        function getLocalDateString(dateString) {
-            const date = new Date(dateString);
-            
-            return `Released on ${date.toLocaleDateString()}`;
-        }
-
-        function formatRuntime(runtime) {
-            const hours = Math.trunc( runtime / 60 );
-            const minutes = runtime % 60;
-            
-            return `Runtime ${hours}h ${minutes}min`;
-        }
-
-        function appendToContainer(container, ...elements) {
-            elements.forEach(element => {
-                container.appendChild(element);
-            });
-        }
     </script>
+
 </head>
+
 <body>
+    <div id="movieContainer"></div>
 </body>
+
 </html>

@@ -4,62 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script defer src="script.js"></script>
+    <link rel="stylesheet" href="style.css">
     <title>Movies!</title>
-    <script>
-        window.onload = function () {
-            const xhr = new XMLHttpRequest()
-            xhr.onload = function () {
-                const bodyElement = document.querySelector("body")
-                if (xhr.status == 200) {
-                    const movieData = JSON.parse(xhr.responseText)
-                    for (let i = 0; i < 3; i++) {
-                        const movie = movieData[i]
-                        const movieDiv = document.createElement("div")
-
-                        //Format Runtime
-                        const runtimeInMinutes = parseInt(movie.Runtime)
-                        const hours = Math.trunc(runtimeInMinutes / 60)
-                        const minutes = runtimeInMinutes % 60
-                        const formattedRuntime = hours + "h " + minutes + "m"
-                        //Format Release Date
-                        const formattedReleasedDate = new Date(movie.Released).toLocaleDateString();
-
-                        movieDiv.innerHTML = `
-<article>
-    <img src="${movie.Poster}" alt="${movie.Title} poster">
-    <h1>${movie.Title}</h1>
-     <p><span>"Runtime ${formattedRuntime}"</span><span>•</span><span>Released on ${formattedReleasedDate}</span></p>
-    <p>
-  ${movie.Genres.map(genre => `<span class="genre">${genre}</span>`).join("")}
-</p>
-    <p>${movie.Plot}</p>
-    <h2>Director</h2>
-    <ul>
-        ${movie.Directors.map(director => `<li>${director}</li>`).join("")}
-    </ul>
-    <h2>Writers</h2>
-    <ul>
-       ${movie.Writers.map(writer => `<li>${writer}</li>`).join("")}
-
-    </ul>
-    <h2>Actors</h2>
-    <ul>
-       ${movie.Actors.map(actor => `<li>${actor}</li>`).join("")}
-
-    </ul>
-</article>
-        `
-                        bodyElement.appendChild(movieDiv)
-                    }
-                } else {
-                    bodyElement.append("Daten konnten nicht geladen werden, Status " + xhr.status + " - " + xhr.statusText)
-                }
-            }
-            xhr.open("GET", "/movies")
-            xhr.send()
-        }
-    </script>
-
 </head>
 
 <body>

@@ -6,47 +6,599 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movies!</title>
     <style>
-        body{
+        /* light mode colors */
+        body.light-mode {
+            --background-color: #f0f0f0;
+            --text-color: #333;
+            --article-background: #f9f9f9;
+            --switch-background: #333;
+            --switch-text-color: #f0f0f0;
+            --genre-tab-color: #575757;
+            --genre-text-color: #f0f0f0;
+            --genre-tab-color-hover: #313131;
+            --genre-text-color-hover: #f6f6f6;
+        }
+
+        /* Default Dark mode colors */
+        :root {
+            --background-color: #1f1f1f;
+            --text-color: #f0f0f0;
+            --article-background: #333;
+            --switch-background: #f0f0f0;
+            --switch-text-color: #333;
+            --genre-tab-color: #bababa;
+            --genre-text-color: #575757;
+            --genre-tab-color-hover: #f6f6f6;
+            --genre-text-color-hover: #313131;
+        }
+
+
+        a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: 0.7s ease;
+        }
+
+        a:hover {
+            color: var(--text-color);
+            filter: brightness(70%);
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 110%;
+            transition: 0.7s ease;
+        }
+
+
+        body {
             font-family: 'Trebuchet MS', sans-serif;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            transition: background-color 0.5s ease, color 0.5s ease;
         }
-        img{
-            border-radius: 4px;
+
+        article {
+            background-color: var(--article-background);
+            border-radius: 30px;
+            margin: 2vw 2vw;
+            padding: 16px;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            align-items: stretch;
+            width: 90vw;
+            min-width: 440px;
+            box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
         }
-        h1{
-            font-size: 200%;
-           font-weight: bold;
-            margin-top: 4px;
-            margin-bottom: 4px;
-            margin-left: 0px;
-            margin-right: 0px;
+
+        .switch {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 9999;
+            background-color: var(--switch-background);
+            color: var(--switch-text-color);
+            border: none;
+            border-radius: 20px;
+            padding: 5px 10px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: background-color .7s ease-out;
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+            transform: scale(1.0);
+            transition: 0.7s ease;
         }
-        article{
-            background-color: aliceblue;
-            border-radius: 2px;
-            margin: 2vw;
-            padding: 2px;
+
+        .switch:hover {
+            transform: scale(1.1);
+            transition: 0.7s ease;
         }
-        span{
-            margin-right: 2px;
+
+        .switch::before {
+            content: '';
+            position: absolute;
+            background-color: var(--switch-background);
+            transition: transform .7s ease;
+            pointer-events: none;
         }
-        .genre{
+
+        article>div {
+            display: grid;
+            grid-template-rows: repeat(10, 1fr);
+
+        }
+
+        img {
+            border-radius: 30px;
+            grid-row: span 10;
+            margin-right: 25px;
+            margin-left: -6px;
+            height: 646px;
+            box-shadow: rgba(27, 31, 35, 0.04) 0px 1px 0px, rgba(255, 255, 255, 0.25) 0px 1px 0px inset;
+            transition: 0.7s ease;
+            -webkit-filter: brightness(70%);
+            -webkit-transition: all 0.7s ease;
+            -moz-transition: all 0.7s ease;
+            -o-transition: all 0.7s ease;
+            -ms-transition: all 0.7s ease;
+            transition: all 0.7s ease;
+        }
+
+        img:hover {
+            -webkit-transform: scale(1.05);
+            -ms-transform: scale(1.05);
+            transform: scale(1.05);
+            transition: 0.7s ease;
+            -webkit-filter: brightness(100%);
+        }
+
+        h1 {
+            font-size: 250%;
+            margin: 8px 4px;
+            grid-column: 2;
+        }
+
+        .genre {
+            background-color: var(--genre-tab-color);
+            color: var(--genre-text-color);
+            padding: 8px 16px;
             font-weight: bold;
-            background-color: rgb(111, 179, 238);
-            padding-top: 3px;
-            padding-bottom: 3px;
-            padding-left: 2px;
-            padding-right: 2px;
-            border-radius: 8px;
-            border: 1px;
-            border-style: groove;
-            border-color: black;
+            border-radius: 16px;
+            border: 1px none #57575700;
+            margin: 5px;
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+        }
+
+        .genre:hover {
+            background-color: var(--genre-tab-color-hover);
+            color: var(--genre-text-color-hover);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .genre.active {
+            background-color: var(--genre-tab-color-hover);
+            color: var(--genre-text-color-hover);
+            padding: 11px 16px;
+            transition: 0.5s ease;
+        }
+
+        .genre:not(.active) {
+            transition: 0.5s ease;
+        }
+
+        p,
+        h2 {
+            margin: 0;
+            grid-column: 2;
+            margin-top: 25px;
+        }
+
+        p {
+            min-height: 50px;
+        }
+
+        h2 {
+            margin-top: 16px;
+        }
+
+        .image-container {
+            grid-row: span 10;
+        }
+
+        span:not(.genre) {
+            margin-right: 0.1px;
+        }
+
+        ul {
+            margin-top: 15px;
+        }
+
+        .runtimeParagraph {
+            margin-top: 0px;
+            text-align: right;
+        }
+
+        .plot {
+            margin-top: 0px;
+            margin-bottom: 20px;
+        }
+
+        #scrollToTopBtn {
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+            z-index: 9999;
+            border: none;
+            outline: none;
+            background-color: var(--genre-tab-color);
+            color: var(--genre-text-color);
+            cursor: pointer;
+            padding: 7px;
+            border-radius: 50%;
+            font-size: 18px;
+            width: 50px;
+            height: 50px;
+
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #scrollToTopBtn:hover {
+            background-color: var(--genre-tab-color-hover);
+        }
+
+        #scrollToTopBtn svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .search-container {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            color: var(--text-color);
+        }
+
+        input,
+        select {
+            color: var(--text-color);
+        }
+
+        .search-input {
+            padding: 10px;
+            background-color: var(--article-background);
+            border-radius: 20px;
+            border-width: 0;
+            width: 300px;
+            font-size: 16px;
+            transform: scale(1.0);
+            transition: 0.7s ease;
+            box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            transform: scale(1.2);
+            transition: 0.7s ease;
+        }
+
+        .slide-out {
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            opacity: 0;
+            transform: translateX(100%);
+        }
+
+        .slide-in {
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            opacity: 1;
+            transform: translateX(0);
         }
 
 
+        @media (max-width: 920px) {
+            article {
+                grid-template-columns: 1fr;
+                align-items: center;
+            }
+
+            img {
+                margin: 0 auto 20px;
+                display: block;
+            }
+
+            p {
+                margin: 0 auto;
+                text-wrap: wrap;
+                max-width: 70vw;
+                display: block;
+                text-align: center;
+            }
+
+            p,
+            h2 {
+                margin: 0 auto;
+                grid-column: 1;
+                display: block;
+                margin-top: 25px;
+            }
+
+            h1 {
+                margin: 0 auto;
+                grid-column: 1;
+                display: block;
+            }
+
+            ul {
+                margin: 0 auto;
+                padding-left: 0;
+                margin-top: 15px;
+            }
+
+            li {
+                margin-left: 0;
+            }
+
+            .plot {
+                margin-top: 15px;
+                margin-bottom: 15px;
+            }
+        }
     </style>
+
+    <script>
+
+        const removeArticle = (article) => {
+            article.classList.add('slide-out');
+            article.classList.remove('slide-in');
+            setTimeout(() => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+
+                article.style.visibility = 'hidden';
+                article.style.padding = '0';
+                article.style.height = '0';
+                article.style.margin = '0';
+            }, 500);
+        };
+
+
+        const addArticleFade = (article) => {
+            article.classList.add('slide-in');
+            article.classList.remove('slide-out');
+
+            article.style.padding = '16px';
+            article.style.visibility = 'visible';
+            article.style.height = 'auto';
+            article.style.margin = '2vw 2vw';
+        }
+
+        const filterMovies = () => {
+            const input = document.getElementById('searchInput').value.trim().toLowerCase();
+            const existingNotice = document.getElementById('searchNotice');
+            existingNotice ? existingNotice.remove() : null;
+
+            input === '' ? showAllMovies() : searchMovies(input);
+        };
+
+        const showAllMovies = () => {
+            document.querySelectorAll('article').forEach(article => addArticleFade(article));
+        };
+
+        const searchMovies = input => {
+            const keywords = input.split(' ').filter(keyword => keyword.trim() !== '');
+            const articles = document.querySelectorAll('article');
+            let foundMatch = false;
+
+            articles.forEach(article => {
+                const isMatch = checkIfMatch(article, keywords);
+                if (isMatch) {
+                    addArticleFade(article);
+                } else {
+                    removeArticle(article);
+                }
+
+                foundMatch = foundMatch || isMatch;
+            });
+
+            foundMatch ? null : showNoMoviesNotice();
+        };
+
+        const checkIfMatch = (article, keywords) => {
+            const titleElement = article.querySelector('h1');
+            const contentElement = article.querySelector('.plot');
+            if (!titleElement || !contentElement) return false;
+
+            const title = titleElement.textContent.toLowerCase();
+            const content = contentElement.textContent.toLowerCase();
+            return keywords.some(keyword => title.includes(keyword) || content.includes(keyword));
+        };
+
+        const showNoMoviesNotice = () => {
+            const notice = document.createElement('article');
+            notice.id = 'searchNotice';
+            notice.innerHTML = '<h1>No movies found</h1><p>Sorry, no movies match your search criteria.</p>';
+            Object.assign(notice.style, {
+                backgroundColor: 'var(--article-background)',
+                borderRadius: '30px',
+                margin: '2vw 2vw',
+                padding: '16px',
+                display: 'grid',
+                gridTemplateColumns: 'auto 1fr',
+                alignItems: 'stretch',
+                width: '90vw',
+                minWidth: '440px',
+                boxShadow: 'rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px',
+            });
+            document.body.appendChild(notice);
+        };
+
+
+
+        const topFunction = () => {
+            const currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
+            currentScroll > 0 && (window.requestAnimationFrame(topFunction), window.scrollTo(0, currentScroll - (currentScroll / 10)));
+        };
+
+        window.onscroll = () => {
+            const scrollToTopBtn = document.getElementById("scrollToTopBtn");
+            (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) ? scrollToTopBtn.style.display = "flex" : scrollToTopBtn.style.display = "none";
+        };
+
+
+        const toggleDarkMode = () => {
+            const body = document.querySelector("body");
+            const switchBtn = document.querySelector(".switch");
+
+            body.classList.toggle("light-mode");
+            const isLightMode = body.classList.contains("light-mode");
+            switchBtn.textContent = isLightMode ? "Dark Mode" : "Light Mode";
+        };
+
+        const reverseString = s => s.split("").reverse().join("");
+
+
+        window.onload = function () {
+            const xhr = new XMLHttpRequest();
+            xhr.onload = function () {
+                const bodyElement = document.querySelector("body");
+                if (xhr.status === 200) {
+                    const movies = JSON.parse(xhr.responseText);
+                    movies.forEach(movie => {
+                        const article = createMovieArticle(movie);
+                        bodyElement.appendChild(article);
+                    });
+                } else {
+                    bodyElement.append("Daten konnten nicht geladen werden, Status " + xhr.status + " - " + xhr.statusText);
+                }
+            };
+            xhr.open("GET", "/movies");
+            xhr.send();
+        };
+
+        const createMovieArticle = (movie) => {
+            const article = document.createElement("article");
+
+            const img = createImageElement(movie.Poster, `${movie.Title} Poster`, "image");
+            article.appendChild(img);
+
+            const h1 = createHTMLElement("h1");
+            const link = document.createElement("a");
+            link.href = "https://www.imdb.com/find?q=" + encodeURIComponent(movie.Title);
+            link.target = "_blank";
+            link.innerText = movie.Title;
+            h1.appendChild(link);
+            article.appendChild(h1);
+
+            const runtimeParagraph = createRuntimeParagraph(movie.Runtime, movie.Released);
+            article.appendChild(runtimeParagraph);
+
+            const genreParagraph = createGenreParagraph(movie.Genres);
+            article.appendChild(genreParagraph);
+
+            const plotParagraph = createHTMLElement("p", movie.Plot, "plot");
+            article.appendChild(plotParagraph);
+
+            const directorsHeading = createHTMLElement("h2", "Directors");
+            article.appendChild(directorsHeading);
+            const directorsList = createList(movie.Directors);
+            article.appendChild(directorsList);
+
+            const writersHeading = createHTMLElement("h2", "Writers");
+            article.appendChild(writersHeading);
+            const writersList = createList(movie.Writers);
+            article.appendChild(writersList);
+
+            const actorsHeading = createHTMLElement("h2", "Actors");
+            article.appendChild(actorsHeading);
+            const actorsList = createList(movie.Actors);
+            article.appendChild(actorsList);
+
+            return article;
+        };
+
+        const createImageElement = (src, alt, className) => {
+            const img = document.createElement("img");
+            img.src = src;
+            img.alt = alt;
+            img.className = className;
+            return img;
+        };
+
+        const createHTMLElement = (tag, textContent, className) => {
+            const element = document.createElement(tag);
+            element.textContent = textContent;
+            if (className) element.className = className;
+            return element;
+        };
+
+        const createRuntimeParagraph = (runtime, released) => {
+            const runtimeParagraph = document.createElement("p");
+            runtimeParagraph.className = "runtimeParagraph";
+            const formattedReleased = released.replace(/(\d{4})-(\d{1,2})-(\d{1,2})/, (match, year, month, day) => `${parseInt(month, 10)}/${parseInt(day, 10)}/${year}`);
+            runtimeParagraph.innerHTML = `<span>Runtime ${Math.floor(runtime / 60)}h ${runtime % 60}m</span><span> • </span><span>Released on ${formattedReleased}</span>`;
+            return runtimeParagraph;
+        };
+
+        const createGenreParagraph = (genres) => {
+            const genreParagraph = document.createElement("p");
+            genres.forEach(genre => {
+                const span = document.createElement("span");
+                span.className = "genre";
+                span.textContent = genre;
+                span.onclick = function () {
+                    filterByGenre(genre);
+                };
+                genreParagraph.appendChild(span);
+            });
+            return genreParagraph;
+        };
+
+        const createList = (items) => {
+            const list = document.createElement("ul");
+            items.forEach(item => {
+                const li = document.createElement("li");
+                li.textContent = item;
+                list.appendChild(li);
+            });
+            return list;
+        };
+
+        const filterByGenre = (selectedGenre) => {
+            const articles = document.querySelectorAll('article');
+            const genres = document.querySelectorAll('.genre');
+
+            let activeGenres = []; // Array to store active genres
+
+            genres.forEach(genre => {
+                if (genre.textContent === selectedGenre) {
+                    genre.classList.toggle('active'); // Toggle the active state of the clicked genre
+                }
+
+                if (genre.classList.contains('active')) {
+                    activeGenres.push(genre.textContent); // Add active genre to the array
+                }
+            });
+
+            if (activeGenres.length === 0) {
+                showAllMovies();
+                return;
+            }
+
+            // Filter movies based on active genres
+            articles.forEach(article => {
+                const articleGenres = article.querySelectorAll('.genre');
+                let foundMatch = false;
+
+                articleGenres.forEach(genre => {
+                    if (activeGenres.includes(genre.textContent)) {
+                        foundMatch = true;
+                    }
+                });
+
+                foundMatch ? addArticleFade(article) : removeArticle(article);
+            });
+        };
+    </script>
+
 </head>
 
 <body>
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search for movies..."
+            onkeyup="filterMovies()">
+    </div>
+
+    <button class="switch" onclick="toggleDarkMode()">Light Mode</button>
+    <button onclick="topFunction()" id="scrollToTopBtn" title="Go to top">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15" />
+        </svg>
+    </button>
 </body>
 
 </html>

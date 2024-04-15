@@ -5,93 +5,99 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movies!</title>
-
     <script>
-
-        function buildGenres(genreList){
-            const p = document.createElement('p')
-            for (const genre of genreList){
-                const span = document.createElement('span');
-                span.textContent = genre
-                span.classList.add('genre');
-                p.append(span)
-            }
-            return p
-        }
-
-        function listGenerator(s, article, list){
-
-            const header = document.createElement('h2');
-            header.innerText = s
-
-
-            const valueList = document.createElement('ul')
-            for (const values of list){
-                const value = document.createElement('li');
-                value.innerText = values
-                valueList.append(value)
-            }
-            article.appendChild(header);
-            article.appendChild(valueList)
-        }
-
-        function buildTime(movie){
-            const span = document.createElement('span');
-
-            let hour = Math.trunc(movie.Runtime/60);
-            let min = movie.Runtime%60;
-            span.innerText = "Runtime "+hour +"h"+" "+min+"m"
-            return span;
-        }
-
-        function buildBullet(){
-            const span = document.createElement('span');
-            span.innerText = '\u{2022}';
-            return span;
-        }
-
-        function buildRealesedDate(movie){
-            const span = document.createElement('span');
-            span.innerText = "Released on " + new Date(movie.Released).toLocaleDateString();
-            console.log(span)
-            return span;
-
+        function reverseString(s) {
+            return s.split("").reverse().join("");
         }
 
         window.onload = function () {
             const xhr = new XMLHttpRequest()
             xhr.onload = function () {
                 const bodyElement = document.querySelector("body")
-                if (xhr.status === 200) {
-		            /* Part 2: Build the HTML elements here and append them to the body */
+                
+                if (xhr.status == 200) {
+		            /* Part 2: Build the HTML elements here and append them to the body */ 
+                    //bodyElement.append(reverseString(xhr.responseText))                  
+        
+                    // parse JSON data into JavaScript object and create html elements
+                    let movies = JSON.parse(xhr.responseText)
+                    
+                    movies.forEach(movie => {
+                        let articleElement = document.createElement("article")
+                        
+                        let imgElement = document.createElement("img")
+                        imgElement.src = movie.Poster
+                        articleElement.append(imgElement)
 
-                    for (movie of JSON.parse(xhr.response)){
-                        const article = document.createElement('article');
-                        bodyElement.appendChild(article)
+                        let titleElement = document.createElement("h1")
+                        titleElement.innerText = movie.Title
+                        articleElement.append(titleElement)
 
-                        const img = document.createElement('img');
-                        img.src = movie.Poster;
-                        article.appendChild(img)
+                        let firstParagraphElement = document.createElement("p")
+                        let runtimeElement = document.createElement("span")
+                        runtimeElement.innerText = "Runtime " + Math.trunc(movie.Runtime/60) + "h " + movie.Runtime%60 + "m"
+                        let bulletPointElement = document.createElement("span")
+                        bulletPointElement.innerText = "\u2022"
+                        let releaseDateElement = document.createElement("span")
+                        let releaseDate = new Date(movie.Released);
+                        releaseDateElement.innerText = "Released on " + releaseDate.toLocaleDateString("en-US")
+                        firstParagraphElement.append(runtimeElement, bulletPointElement, releaseDateElement)
+                        articleElement.append(firstParagraphElement)
 
-                        const h1 = document.createElement('h1');
-                        h1.innerText = movie.Title
-                        article.appendChild(h1)
+                        let secondParagraphElement = document.createElement("p")
+                        movie.Genres.forEach(genre => {
+                            let spanElement = document.createElement("span")
+                            spanElement.classList.add("genre")
+                            spanElement.innerText = genre
+                            secondParagraphElement.append(spanElement)
+                        })
+                        articleElement.append(secondParagraphElement)
 
-                        const p1 = document.createElement('p');
-                        p1.append(buildTime(movie))
-                        p1.append(buildBullet())
-                        p1.append(buildRealesedDate(movie))
-                        article.appendChild(p1);
+                        let thirdParagraphElement = document.createElement("p")
+                        thirdParagraphElement.innerText = movie.Plot
+                        articleElement.append(thirdParagraphElement)
 
-                        article.appendChild(buildGenres(movie.Genres))
-                        const p3 = document.createElement('p');
-                        p3.innerText = movie.Plot;
-                        article.appendChild(p3)
-                        listGenerator("Directors", article, movie.Directors)
-                        listGenerator("Writers", article, movie.Writers)
-                        listGenerator("Actors", article, movie.Actors)
+                        let directorElement = document.createElement("h2")
+                        directorElement.innerText = "Directors"
 
-                    }
+                        let firstUnorderedListElement = document.createElement("ul")
+                        movie.Directors.forEach(director => {
+                            let listItem = document.createElement("li")
+                            listItem.innerText = director
+                            firstUnorderedListElement.append(listItem)
+                        })
+                        articleElement.append(directorElement, firstUnorderedListElement)
+
+                        let writerElement = document.createElement("h2")
+                        writerElement.innerText = "Writers"
+
+                        let secondUnorderedListElement = document.createElement("ul")
+                        movie.Writers.forEach(writer => {
+                            let listItem = document.createElement("li")
+                            listItem.innerText = writer
+                            secondUnorderedListElement.append(listItem)
+                        })
+                        articleElement.append(writerElement, secondUnorderedListElement)
+
+                        let actorElement = document.createElement("h2")
+                        actorElement.innerText = "Actors"
+
+                        let thirdUnorderedListElement = document.createElement("ul")
+                        movie.Actors.forEach(actor => {
+                            let listItem = document.createElement("li")
+                            listItem.innerText = actor
+                            thirdUnorderedListElement.append(listItem)
+                        })
+                        articleElement.append(actorElement, thirdUnorderedListElement)
+
+
+                        let h2Element = document.createElement("h2")
+
+                        let unorderedListElement = document.createElement("ul")
+
+                        bodyElement.append(articleElement)
+                    });
+                    
                 } else {
                     bodyElement.append("Daten konnten nicht geladen werden, Status " + xhr.status + " - " + xhr.statusText)
                 }
